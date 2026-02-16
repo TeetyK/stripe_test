@@ -3,16 +3,15 @@ const express = require("express");
 const mysql = require("mysql2/promise");
 const { v4: uuidv4 } = require("uuid");
 
-require("dotenv").config();
+require('dotenv').config()
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = 8000;
 
-const endpointSecret = "https://buy.stripe.com/test_6oU00bfJJ7llchafxCao800"; // เอาได้จากเว็บของ Stripe
+const endpointSecret = "whsec_40217a7a2773b295b30d946442f0f594ed2766a3909f7c1833b28a73663298ef"; // เอาได้จากเว็บของ Stripe
 
-// Middlewares here
 app.use(cors());
 
 let conn = null;
@@ -28,7 +27,6 @@ const initMySQL = async () => {
 app.post("/api/checkout", express.json(), async (req, res) => {
   const { product, information } = req.body;
   try {
-    // create payment session
     const orderId = uuidv4();
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -49,7 +47,6 @@ app.post("/api/checkout", express.json(), async (req, res) => {
       cancel_url: `http://localhost:8888/cancel.html?id=${orderId}`,
     });
 
-    // create order in database (name, address, session id, status)
     console.log("session", session);
 
     const data = {
@@ -83,8 +80,6 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
     res.status(400).send(`Webhook Error: ${err.message}`);
     return;
   }
-
-  // Handle the event
   switch (event.type) {
     case "checkout.session.completed":
       const paymentSuccessData = event.data.object;
@@ -108,7 +103,6 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
       console.log(`Unhandled event type ${event.type}`);
   }
 
-  // Return a 200 response to acknowledge receipt of the event
   res.send();
 });
 app.get("/order/:id", async (req, res) => {
