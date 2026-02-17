@@ -1,4 +1,6 @@
-const stripe = Stripe("pk_test_51T13Ff0EdYWPgAgYfODsgCZPHmDk4SgRzUt1Oti1iqVU9PGH9XAC3VrjwPZb3rESmxqAnoRMHC26A7sjbFRxaoCB00K6ZYVbqa");
+require('dotenv').config()
+
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const placeorder = async (data) => {
   try {
     const requestData = {
