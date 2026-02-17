@@ -10,7 +10,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const app = express();
 const port = 8000;
 
-const endpointSecret = "whsec_40217a7a2773b295b30d946442f0f594ed2766a3909f7c1833b28a73663298ef"; // เอาได้จากเว็บของ Stripe
+const endpointSecret = process.env.END_POINT_KEY; // เอาได้จากเว็บของ Stripe
 
 app.use(cors());
 
